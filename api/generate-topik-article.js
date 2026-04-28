@@ -66,7 +66,17 @@ Now generate a COMPLETELY NEW and DIFFERENT article for TOPIK Level ${level} in 
 - grammar array must have EXACTLY 4 items
 - questions array must have EXACTLY 4 items with answerIndex as a number (0-3)
 - All meanings, explanations, and translations must be in Traditional Chinese (繁體中文)
-- The content must be original Korean text appropriate for TOPIK Level ${level}`;
+- The content must be original Korean text appropriate for TOPIK Level ${level}
+
+CRITICAL RULES — NEVER VIOLATE:
+- The "title" field must contain ONLY Korean Hangul characters (한글), spaces, and punctuation. ABSOLUTELY NO Chinese characters (漢字/Hanja).
+- The "content" field must contain ONLY Korean Hangul characters (한글), spaces, and punctuation. ABSOLUTELY NO Chinese characters (漢字/Hanja).
+- The "vocabulary[].korean" field must contain ONLY Korean Hangul. ABSOLUTELY NO Chinese characters.
+- The "vocabulary[].example" field must contain ONLY Korean Hangul. ABSOLUTELY NO Chinese characters.
+- The "grammar[].example" field must contain ONLY Korean Hangul. ABSOLUTELY NO Chinese characters.
+- The "questions[].question" and "questions[].options" fields must contain ONLY Korean Hangul. ABSOLUTELY NO Chinese characters.
+- Chinese characters are ONLY allowed in: contentTranslation, meaning, explanation, exampleTranslation, and other translation/explanation fields.
+- If you are tempted to write a Chinese character in title or content, write the Korean Hangul pronunciation instead.`;
 
   try {
     const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -82,6 +92,31 @@ Now generate a COMPLETELY NEW and DIFFERENT article for TOPIK Level ${level} in 
     if (!jsonMatch) throw new Error('AI 回傳格式錯誤，請重試。');
 
     const parsed = JSON.parse(jsonMatch[0]);
+
+    const stripHanja = (str) => str.replace(/[一-鿿㐀-䶿]/g, '');
+
+    parsed.title = stripHanja(parsed.title ?? '');
+    parsed.content = stripHanja(parsed.content ?? '');
+    if (Array.isArray(parsed.vocabulary)) {
+      parsed.vocabulary = parsed.vocabulary.map(v => ({
+        ...v,
+        korean: stripHanja(v.korean ?? ''),
+        example: stripHanja(v.example ?? ''),
+      }));
+    }
+    if (Array.isArray(parsed.grammar)) {
+      parsed.grammar = parsed.grammar.map(g => ({
+        ...g,
+        example: stripHanja(g.example ?? ''),
+      }));
+    }
+    if (Array.isArray(parsed.questions)) {
+      parsed.questions = parsed.questions.map(q => ({
+        ...q,
+        question: stripHanja(q.question ?? ''),
+        options: Array.isArray(q.options) ? q.options.map(o => stripHanja(o)) : q.options,
+      }));
+    }
 
     res.json({
       id: `${level}-ai-${Date.now()}`,
