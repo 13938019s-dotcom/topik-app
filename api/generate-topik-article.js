@@ -32,6 +32,7 @@ Return ONLY a valid JSON object with NO extra text, NO markdown, NO code fences.
 {
   "title": "우리 동네",
   "content": "우리 동네는 조용하고 깨끗합니다. 학교, 병원, 슈퍼마켓이 있습니다. 공원도 있어서 사람들이 산책을 합니다. 저는 우리 동네가 좋습니다.",
+  "contentTranslation": "我們的社區很安靜、很乾淨。有學校、醫院和超市。因為也有公園，所以人們去散步。我喜歡我們的社區。",
   "vocabulary": [
     { "korean": "동네", "romanization": "dongne", "meaning": "社區/鄰里", "example": "우리 동네는 조용합니다.", "exampleTranslation": "我們的社區很安靜。" },
     { "korean": "조용하다", "romanization": "joyonghada", "meaning": "安靜", "example": "도서관이 조용합니다.", "exampleTranslation": "圖書館很安靜。" },
@@ -59,6 +60,7 @@ Return ONLY a valid JSON object with NO extra text, NO markdown, NO code fences.
 }
 
 Now generate a COMPLETELY NEW and DIFFERENT article for TOPIK Level ${level} in the exact same JSON format. Requirements:
+- contentTranslation must be the Traditional Chinese (繁體中文) translation of the content field
 - content must be at least 6 sentences long
 - vocabulary array must have EXACTLY 10 items with romanization in the "romanization" field
 - grammar array must have EXACTLY 4 items
@@ -86,6 +88,7 @@ Now generate a COMPLETELY NEW and DIFFERENT article for TOPIK Level ${level} in 
       level,
       title: parsed.title,
       content: parsed.content,
+      contentTranslation: parsed.contentTranslation ?? '',
       vocabulary: parsed.vocabulary,
       grammar: parsed.grammar,
       questions: parsed.questions,
