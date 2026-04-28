@@ -233,6 +233,10 @@ export default function App() {
         {/* ── WRITING ZONE ── */}
         {view === 'writing' && <WritingZone />}
       </main>
+
+      <footer className="text-center py-4 text-xs text-gray-300">
+        Made by <span className="font-bold text-gray-400">zoenozomi</span>
+      </footer>
     </div>
   );
 }
