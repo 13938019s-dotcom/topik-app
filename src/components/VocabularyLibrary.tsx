@@ -18,6 +18,21 @@ const POS_STYLE: Record<PartOfSpeech, string> = {
   '副詞': 'bg-violet-50 text-violet-600 border-violet-200',
 };
 
+const POS_ACTIVE: Record<PartOfSpeech, string> = {
+  '名詞': 'bg-sky-500 text-white border-sky-500',
+  '動詞': 'bg-emerald-500 text-white border-emerald-500',
+  '形容詞': 'bg-amber-500 text-white border-amber-500',
+  '副詞': 'bg-violet-500 text-white border-violet-500',
+};
+
+const POS_FILTERS: { value: PartOfSpeech | 'all'; label: string }[] = [
+  { value: 'all', label: '全部詞性' },
+  { value: '名詞', label: '名詞' },
+  { value: '動詞', label: '動詞' },
+  { value: '形容詞', label: '形容詞' },
+  { value: '副詞', label: '副詞' },
+];
+
 function PosBadge({ pos }: { pos: PartOfSpeech }) {
   return (
     <span className={`inline-block text-xs font-bold px-1.5 py-0.5 rounded border ${POS_STYLE[pos]}`}>
@@ -79,17 +94,19 @@ function VocabCard({ item, onRemove }: { item: SavedVocabulary; onRemove: () => 
 
 export function VocabularyLibrary() {
   const { savedVocab, removeVocab } = useLibrary();
-  const [filter, setFilter] = useState<TopikLevel | 'all'>('all');
+  const [levelFilter, setLevelFilter] = useState<TopikLevel | 'all'>('all');
+  const [posFilter, setPosFilter] = useState<PartOfSpeech | 'all'>('all');
   const [search, setSearch] = useState('');
 
   const filtered = savedVocab.filter(v => {
-    const matchLevel = filter === 'all' || v.level === filter;
+    const matchLevel = levelFilter === 'all' || v.level === levelFilter;
+    const matchPos = posFilter === 'all' || v.partOfSpeech === posFilter;
     const matchSearch =
       !search ||
       v.korean.includes(search) ||
       v.meaning.includes(search) ||
       v.romanization.toLowerCase().includes(search.toLowerCase());
-    return matchLevel && matchSearch;
+    return matchLevel && matchPos && matchSearch;
   });
 
   return (
@@ -109,15 +126,34 @@ export function VocabularyLibrary() {
       />
 
       {/* Level filter */}
-      <div className="flex gap-2 mb-4 flex-wrap">
+      <div className="flex gap-2 mb-2 flex-wrap">
         {LEVEL_FILTERS.map(({ value, label }) => (
           <button
             key={value}
-            onClick={() => setFilter(value)}
+            onClick={() => setLevelFilter(value)}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
-              filter === value
+              levelFilter === value
                 ? 'bg-blue-500 text-white'
                 : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* POS filter */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {POS_FILTERS.map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => setPosFilter(value)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+              posFilter === value
+                ? value === 'all'
+                  ? 'bg-gray-800 text-white border-gray-800'
+                  : POS_ACTIVE[value as PartOfSpeech]
+                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
             }`}
           >
             {label}
