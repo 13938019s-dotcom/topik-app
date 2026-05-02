@@ -1,4 +1,4 @@
-import type { Vocabulary, TopikLevel } from '../types';
+import type { Vocabulary, TopikLevel, PartOfSpeech } from '../types';
 import { useSpeech } from '../hooks/useSpeech';
 import { useLibrary } from '../hooks/useLibrary';
 
@@ -6,6 +6,21 @@ interface Props {
   vocabulary: Vocabulary[];
   articleTitle: string;
   level: TopikLevel;
+}
+
+const POS_STYLE: Record<PartOfSpeech, string> = {
+  '名詞': 'bg-sky-50 text-sky-600 border-sky-200',
+  '動詞': 'bg-emerald-50 text-emerald-600 border-emerald-200',
+  '形容詞': 'bg-amber-50 text-amber-600 border-amber-200',
+  '副詞': 'bg-violet-50 text-violet-600 border-violet-200',
+};
+
+function PosBadge({ pos }: { pos: PartOfSpeech }) {
+  return (
+    <span className={`inline-block text-xs font-bold px-1.5 py-0.5 rounded border ${POS_STYLE[pos]}`}>
+      {pos}
+    </span>
+  );
 }
 
 function SpeakButton({ text, small = false }: { text: string; small?: boolean }) {
@@ -36,10 +51,11 @@ export function VocabularyPanel({ vocabulary, articleTitle, level }: Props) {
           <div key={i} className="bg-white rounded-2xl p-4 shadow-sm ring-1 ring-gray-100">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xl font-black text-gray-900">{v.korean}</span>
                   <SpeakButton text={v.korean} />
                   <span className="text-sm text-gray-400">[{v.romanization}]</span>
+                  {v.partOfSpeech && <PosBadge pos={v.partOfSpeech} />}
                 </div>
                 <span className="inline-block mt-1 text-sm font-bold text-blue-600 bg-blue-50 rounded-lg px-2 py-0.5">
                   {v.meaning}

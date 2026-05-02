@@ -1,4 +1,4 @@
-import type { SavedVocabulary, TopikLevel } from '../types';
+import type { SavedVocabulary, TopikLevel, PartOfSpeech } from '../types';
 import { useSpeech } from '../hooks/useSpeech';
 import { useLibrary } from '../hooks/useLibrary';
 import { LevelBadge } from './LevelBadge';
@@ -11,6 +11,21 @@ const LEVEL_FILTERS: { value: TopikLevel | 'all'; label: string }[] = [
   { value: '5-6', label: 'Lv.5-6' },
 ];
 
+const POS_STYLE: Record<PartOfSpeech, string> = {
+  '名詞': 'bg-sky-50 text-sky-600 border-sky-200',
+  '動詞': 'bg-emerald-50 text-emerald-600 border-emerald-200',
+  '形容詞': 'bg-amber-50 text-amber-600 border-amber-200',
+  '副詞': 'bg-violet-50 text-violet-600 border-violet-200',
+};
+
+function PosBadge({ pos }: { pos: PartOfSpeech }) {
+  return (
+    <span className={`inline-block text-xs font-bold px-1.5 py-0.5 rounded border ${POS_STYLE[pos]}`}>
+      {pos}
+    </span>
+  );
+}
+
 function VocabCard({ item, onRemove }: { item: SavedVocabulary; onRemove: () => void }) {
   const { speak } = useSpeech();
   return (
@@ -21,7 +36,7 @@ function VocabCard({ item, onRemove }: { item: SavedVocabulary; onRemove: () => 
             <LevelBadge level={item.level} />
             <span className="text-xs text-gray-400">{item.articleTitle}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xl font-black text-gray-900">{item.korean}</span>
             <button
               onClick={() => speak(item.korean)}
@@ -30,6 +45,7 @@ function VocabCard({ item, onRemove }: { item: SavedVocabulary; onRemove: () => 
               🔊
             </button>
             <span className="text-sm text-gray-400">[{item.romanization}]</span>
+            {item.partOfSpeech && <PosBadge pos={item.partOfSpeech} />}
           </div>
           <span className="inline-block mt-1 text-sm font-bold text-blue-600 bg-blue-50 rounded-lg px-2 py-0.5">
             {item.meaning}

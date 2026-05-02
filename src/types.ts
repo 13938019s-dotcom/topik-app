@@ -1,9 +1,12 @@
 export type TopikLevel = '1-2' | '3-4' | '5-6';
 
+export type PartOfSpeech = '名詞' | '動詞' | '形容詞' | '副詞';
+
 export interface Vocabulary {
   korean: string;
   romanization: string;
   meaning: string;
+  partOfSpeech?: PartOfSpeech;
   example: string;
   exampleTranslation: string;
 }
