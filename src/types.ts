@@ -53,7 +53,7 @@ export interface SavedGrammar extends GrammarPoint {
   level: TopikLevel;
 }
 
-export type AppView = 'reading' | 'vocab-library' | 'grammar-library' | 'writing';
+export type AppView = 'reading' | 'vocab-library' | 'grammar-library' | 'writing' | 'conjugation';
 
 export interface SampleAnswer {
   authorLabel: string;

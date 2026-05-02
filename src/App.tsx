@@ -10,6 +10,7 @@ import { ArticleReader } from './components/ArticleReader';
 import { VocabularyLibrary } from './components/VocabularyLibrary';
 import { GrammarLibrary } from './components/GrammarLibrary';
 import { WritingZone } from './components/WritingZone';
+import { KoreanConjugationPage } from './components/KoreanConjugationPage';
 
 const LEVELS: TopikLevel[] = ['1-2', '3-4', '5-6'];
 
@@ -117,6 +118,7 @@ export default function App() {
               { id: 'vocab-library' as AppView, label: '⭐ 單字庫' },
               { id: 'grammar-library' as AppView, label: '📝 文法庫' },
               { id: 'writing' as AppView, label: '✍️ 寫作' },
+              { id: 'conjugation' as AppView, label: '🔤 活用' },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -232,6 +234,9 @@ export default function App() {
 
         {/* ── WRITING ZONE ── */}
         {view === 'writing' && <WritingZone />}
+
+        {/* ── CONJUGATION ── */}
+        {view === 'conjugation' && <KoreanConjugationPage />}
       </main>
 
       <footer className="text-center py-4 text-xs text-gray-300">
