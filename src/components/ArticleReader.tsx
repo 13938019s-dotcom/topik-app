@@ -72,8 +72,8 @@ export function ArticleReader({ article, isCompleted, onComplete, onBack }: Prop
         ))}
       </div>
 
-      {/* Content */}
-      {tab === 'article' && (
+      {/* Content — always mounted, CSS-toggled to preserve state across tab switches */}
+      <div className={tab === 'article' ? '' : 'hidden'}>
         <div className="bg-white rounded-2xl p-5 shadow-sm ring-1 ring-gray-100">
           <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
             <button
@@ -109,31 +109,31 @@ export function ArticleReader({ article, isCompleted, onComplete, onBack }: Prop
             </div>
           )}
         </div>
-      )}
+      </div>
 
-      {tab === 'vocabulary' && (
+      <div className={tab === 'vocabulary' ? '' : 'hidden'}>
         <VocabularyPanel
           vocabulary={article.vocabulary}
           articleTitle={article.title}
           level={article.level}
         />
-      )}
+      </div>
 
-      {tab === 'grammar' && (
+      <div className={tab === 'grammar' ? '' : 'hidden'}>
         <GrammarPanel
           grammar={article.grammar}
           articleTitle={article.title}
           level={article.level}
         />
-      )}
+      </div>
 
-      {tab === 'quiz' && (
+      <div className={tab === 'quiz' ? '' : 'hidden'}>
         <QuizPanel
           questions={article.questions}
           isCompleted={isCompleted}
           onComplete={onComplete}
         />
-      )}
+      </div>
     </div>
   );
 }
