@@ -11,6 +11,7 @@ import { VocabularyLibrary } from './components/VocabularyLibrary';
 import { GrammarLibrary } from './components/GrammarLibrary';
 import { WritingZone } from './components/WritingZone';
 import { KoreanConjugationPage } from './components/KoreanConjugationPage';
+import { GrammarGuidePage } from './components/GrammarGuidePage';
 
 const LEVELS: TopikLevel[] = ['1-2', '3-4', '5-6'];
 
@@ -33,6 +34,16 @@ export default function App() {
   const [aiArticles, setAiArticles] = useState<Article[]>([]);
   const [generating, setGenerating] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
+
+  // Track how many AI articles have been generated per level (for grammar batch cycling)
+  const [aiGenCount, setAiGenCount] = useState<Record<TopikLevel, number>>(() => {
+    try {
+      const raw = localStorage.getItem('topik_ai_gen_count');
+      return raw ? JSON.parse(raw) : { '1-2': 0, '3-4': 0, '5-6': 0 };
+    } catch {
+      return { '1-2': 0, '3-4': 0, '5-6': 0 };
+    }
+  });
 
   const { progress, markCompleted, isCompleted, getCompletedCount } = useProgress();
   const { savedVocab, savedGrammar } = useLibrary();
@@ -62,8 +73,13 @@ export default function App() {
     setGenerating(true);
     setGenerateError(null);
     try {
-      const article = await generateArticle(selectedLevel);
+      const count = aiGenCount[selectedLevel] ?? 0;
+      const article = await generateArticle(selectedLevel, count);
       setAiArticles(prev => [...prev, article]);
+      // Increment counter and persist
+      const newCount = { ...aiGenCount, [selectedLevel]: count + 1 };
+      setAiGenCount(newCount);
+      localStorage.setItem('topik_ai_gen_count', JSON.stringify(newCount));
     } catch (e) {
       setGenerateError(e instanceof Error ? e.message : 'AI 生成失敗，請重試。');
     } finally {
@@ -119,6 +135,7 @@ export default function App() {
               { id: 'grammar-library' as AppView, label: '📝 文法庫' },
               { id: 'writing' as AppView, label: '✍️ 寫作' },
               { id: 'conjugation' as AppView, label: '🔤 活用' },
+              { id: 'grammar-guide' as AppView, label: '📖 文法表' },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -237,6 +254,9 @@ export default function App() {
 
         {/* ── CONJUGATION ── */}
         {view === 'conjugation' && <KoreanConjugationPage />}
+
+        {/* ── GRAMMAR GUIDE ── */}
+        {view === 'grammar-guide' && <GrammarGuidePage />}
       </main>
 
       <footer className="text-center py-4 text-xs text-gray-300">

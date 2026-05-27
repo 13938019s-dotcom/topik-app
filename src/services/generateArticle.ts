@@ -1,10 +1,10 @@
 import type { Article, TopikLevel } from '../types';
 
-export async function generateArticle(level: TopikLevel): Promise<Article> {
+export async function generateArticle(level: TopikLevel, articleCount: number): Promise<Article> {
   const res = await fetch('/api/generate-topik-article', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ level }),
+    body: JSON.stringify({ level, articleCount }),
   });
 
   if (!res.ok) {

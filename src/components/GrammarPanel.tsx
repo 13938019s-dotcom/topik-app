@@ -8,6 +8,16 @@ interface Props {
   level: TopikLevel;
 }
 
+function levelBadgeColor(topikLevel: string): string {
+  if (topikLevel.includes('1급')) return 'bg-sky-100 text-sky-600';
+  if (topikLevel.includes('2급')) return 'bg-blue-100 text-blue-600';
+  if (topikLevel.includes('3급')) return 'bg-emerald-100 text-emerald-600';
+  if (topikLevel.includes('4급')) return 'bg-amber-100 text-amber-600';
+  if (topikLevel.includes('5급')) return 'bg-orange-100 text-orange-600';
+  if (topikLevel.includes('6급')) return 'bg-rose-100 text-rose-600';
+  return 'bg-gray-100 text-gray-500';
+}
+
 export function GrammarPanel({ grammar, articleTitle, level }: Props) {
   const { speak } = useSpeech();
   const { saveGrammar, removeGrammar, isGrammarSaved } = useLibrary();
@@ -24,6 +34,11 @@ export function GrammarPanel({ grammar, articleTitle, level }: Props) {
                   <span className="text-base font-black text-gray-900 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-xl">
                     {g.pattern}
                   </span>
+                  {g.topikLevel && (
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${levelBadgeColor(g.topikLevel)}`}>
+                      {g.topikLevel}
+                    </span>
+                  )}
                 </div>
                 <p className="text-sm text-gray-600 mt-2 leading-relaxed">{g.explanation}</p>
               </div>

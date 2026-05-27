@@ -13,6 +13,7 @@ export interface Vocabulary {
 
 export interface GrammarPoint {
   pattern: string;
+  topikLevel?: string;   // e.g. "TOPIK 1급", "TOPIK 3급"
   explanation: string;
   example: string;
   exampleTranslation: string;
@@ -56,7 +57,7 @@ export interface SavedGrammar extends GrammarPoint {
   level: TopikLevel;
 }
 
-export type AppView = 'reading' | 'vocab-library' | 'grammar-library' | 'writing' | 'conjugation';
+export type AppView = 'reading' | 'vocab-library' | 'grammar-library' | 'writing' | 'conjugation' | 'grammar-guide';
 
 export interface SampleAnswer {
   authorLabel: string;
